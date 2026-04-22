@@ -11,7 +11,7 @@ import {
     SidebarMenuItem,
     SidebarMenuSub,
 } from '@/components/ui/sidebar';
-import { ChartLine, Home, Library, Search } from 'lucide-react';
+import { ChartLine, ChevronRight, Home, Library, Search } from 'lucide-react';
 import { Link } from 'react-router';
 import { NavUser } from './NavUser';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
@@ -22,6 +22,13 @@ import { getServerUrl } from '@/utils/localstorageCredentials';
 import { useTheme } from './theme-provider';
 import { useConfig } from '@/hooks/api/useConfig';
 import { getEffectiveTheme } from '@/utils/effectiveTheme';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
+import {
+    getLibraryCollapsibleState,
+    saveLibraryCollapsibleState,
+} from '../utils/localstorageSidebar';
+import { useState } from 'react';
+import { Button } from './ui/button';
 
 function serverUrlToDomain(url: string) {
     try {
@@ -40,6 +47,7 @@ const AppSidebar = () => {
     const serverDomain = serverUrl ? serverUrlToDomain(serverUrl) : null;
     const { theme } = useTheme();
     const effectiveTheme = getEffectiveTheme(theme);
+    const [libraryOpen, setLibraryOpen] = useState(getLibraryCollapsibleState);
 
     return (
         <Sidebar variant="floating" collapsible="icon">
@@ -83,28 +91,53 @@ const AppSidebar = () => {
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
                             <SidebarMenuItem>
-                                <SidebarMenuButton asChild>
-                                    <Link to={'/library'}>
-                                        <Library />
-                                        {t('library')}
-                                    </Link>
-                                </SidebarMenuButton>
-                                {views && views.Items && views.Items.length > 0 && (
-                                    <SidebarMenuSub>
-                                        {views.Items.map((view) => (
-                                            <SidebarMenuItem key={view.Id}>
-                                                <SidebarMenuButton asChild>
-                                                    <Link to={`/library?library=${view.Id}`}>
-                                                        <JellyfinLibraryIcon
-                                                            libraryType={view.CollectionType}
-                                                        />
-                                                        {view.Name}
+                                <Collapsible
+                                    className="group/collapsible"
+                                    open={libraryOpen}
+                                    onOpenChange={(open) => {
+                                        setLibraryOpen(open);
+                                        saveLibraryCollapsibleState(open);
+                                    }}
+                                >
+                                    <CollapsibleTrigger asChild>
+                                        <SidebarMenuButton asChild>
+                                            <div>
+                                                <Button asChild variant="ghost" className="p-0!">
+                                                    <Link to={'/library'}>
+                                                        <Library />
+                                                        {t('library')}
                                                     </Link>
-                                                </SidebarMenuButton>
-                                            </SidebarMenuItem>
-                                        ))}
-                                    </SidebarMenuSub>
-                                )}
+                                                </Button>
+                                                {views?.Items?.length &&
+                                                    views?.Items?.length > 0 && (
+                                                        <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
+                                                    )}
+                                            </div>
+                                        </SidebarMenuButton>
+                                    </CollapsibleTrigger>
+                                    {views?.Items?.length && views?.Items?.length > 0 && (
+                                        <CollapsibleContent>
+                                            <SidebarMenuSub>
+                                                {views.Items.map((view) => (
+                                                    <SidebarMenuItem key={view.Id}>
+                                                        <SidebarMenuButton asChild>
+                                                            <Link
+                                                                to={`/library?library=${view.Id}`}
+                                                            >
+                                                                <JellyfinLibraryIcon
+                                                                    libraryType={
+                                                                        view.CollectionType
+                                                                    }
+                                                                />
+                                                                {view.Name}
+                                                            </Link>
+                                                        </SidebarMenuButton>
+                                                    </SidebarMenuItem>
+                                                ))}
+                                            </SidebarMenuSub>
+                                        </CollapsibleContent>
+                                    )}
+                                </Collapsible>
                             </SidebarMenuItem>
                             <SidebarMenuItem>
                                 <SidebarMenuButton asChild>

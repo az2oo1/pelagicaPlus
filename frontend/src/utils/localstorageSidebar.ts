@@ -1,4 +1,5 @@
 const STORAGE_KEY = 'pelagica_sidebar_state';
+const LIBRARY_COLLAPSIBLE_KEY = 'pelagica_library_collapsible_state';
 
 export function saveSidebarState(isOpen: boolean) {
     try {
@@ -27,4 +28,22 @@ export function clearSidebarState() {
     } catch (error) {
         console.error('Failed to clear sidebar state:', error);
     }
+}
+
+export function saveLibraryCollapsibleState(isOpen: boolean) {
+    try {
+        localStorage.setItem(LIBRARY_COLLAPSIBLE_KEY, JSON.stringify(isOpen));
+    } catch (error) {
+        console.error('Failed to save library collapsible state:', error);
+    }
+}
+
+export function getLibraryCollapsibleState(): boolean {
+    try {
+        const stored = localStorage.getItem(LIBRARY_COLLAPSIBLE_KEY);
+        if (stored !== null) return JSON.parse(stored);
+    } catch (error) {
+        console.error('Failed to retrieve library collapsible state:', error);
+    }
+    return true; // default to open
 }
