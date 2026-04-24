@@ -25,9 +25,16 @@ func resolveBrandingLogoMode(mode string) (string, error) {
 	}
 }
 
+func brandingDir() string {
+	dir := os.Getenv("BRANDING_DIR")
+	if dir == "" {
+		dir = "branding"
+	}
+	return dir
+}
+
 func brandingLogoPath(mode string) string {
-	configDir := filepath.Dir(configPath())
-	return filepath.Join(configDir, "branding", "logo-"+mode)
+	return filepath.Join(brandingDir(), "branding", "logo-"+mode)
 }
 
 func loadAppConfig() (models.AppConfig, error) {

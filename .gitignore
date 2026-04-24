@@ -16,6 +16,7 @@ config.json
 config/**/*
 backend/theme.json
 backend/themes
+branding
 
 # Editor directories and files
 .vscode/*

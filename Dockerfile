@@ -54,6 +54,7 @@ ENV PORT=4321
 ENV ENABLE_AUTH=true
 ENV CONFIG_PATH=/config/config.json
 ENV THEMES_DIR=/config/themes
+ENV BRANDING_DIR=/config/branding
 ENV DEFAULT_THEME_PATH=/default.theme.json
 ENV THEMES_REPO_BASE_URL=https://themes.pelagica.app/
 
