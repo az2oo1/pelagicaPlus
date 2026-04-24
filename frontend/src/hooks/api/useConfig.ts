@@ -1,5 +1,5 @@
 import type { BaseItemKind, ItemSortBy } from '@jellyfin/sdk/lib/generated-client/models';
-import { useEffect, useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { RecommendationTypeFilter } from './useRecommendedItems';
 import { getAccessToken, getServerUrl } from '@/utils/localstorageCredentials';
 
@@ -313,53 +313,44 @@ const DEFAULT_CONFIG: AppConfig = {
     ],
 };
 
+const CONFIG_QUERY_KEY = ['config'] as const;
+
+const fetchConfig = async (): Promise<AppConfig> => {
+    const response = await fetch('/api/config');
+    if (!response.ok) {
+        console.warn('Config file not found, using default configuration');
+        return DEFAULT_CONFIG;
+    }
+    const data: AppConfig = await response.json();
+    // Merge with defaults to ensure all required fields exist
+    return {
+        ...DEFAULT_CONFIG,
+        ...data,
+        itemPage: {
+            ...DEFAULT_ITEM_PAGE_SETTINGS,
+            ...data.itemPage,
+        },
+    };
+};
+
 export const useConfig = () => {
-    const [config, setConfig] = useState<AppConfig>(DEFAULT_CONFIG);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const { data, isLoading, error } = useQuery({
+        queryKey: CONFIG_QUERY_KEY,
+        queryFn: fetchConfig,
+    });
 
-    useEffect(() => {
-        const loadConfig = async () => {
-            try {
-                const response = await fetch('/api/config');
-                if (!response.ok) {
-                    console.warn('Config file not found, using default configuration');
-                    setConfig(DEFAULT_CONFIG);
-                } else {
-                    const data: AppConfig = await response.json();
-                    // Merge with defaults to ensure all required fields exist
-                    setConfig({
-                        ...DEFAULT_CONFIG,
-                        ...data,
-                        itemPage: {
-                            ...DEFAULT_ITEM_PAGE_SETTINGS,
-                            ...data.itemPage,
-                        },
-                    });
-                }
-            } catch (err) {
-                console.warn('Failed to load config file, using default configuration', err);
-                setConfig(DEFAULT_CONFIG);
-                setError(err instanceof Error ? err.message : 'Failed to load config');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        loadConfig();
-    }, []);
-
-    return { config, loading, error };
+    return {
+        config: data ?? DEFAULT_CONFIG,
+        loading: isLoading,
+        error: error instanceof Error ? error.message : error ? String(error) : null,
+    };
 };
 
 export const useUpdateConfig = () => {
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const queryClient = useQueryClient();
 
-    const updateConfig = async (newConfig: AppConfig): Promise<void> => {
-        setLoading(true);
-        setError(null);
-        try {
+    const mutation = useMutation({
+        mutationFn: async (newConfig: AppConfig): Promise<void> => {
             const response = await fetch(
                 '/api/config?jellyfin_url=' + encodeURIComponent(getServerUrl() || ''),
                 {
@@ -374,14 +365,22 @@ export const useUpdateConfig = () => {
             if (!response.ok) {
                 throw new Error(`Failed to update config: ${response.statusText}`);
             }
-        } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : 'Failed to update config';
-            setError(errorMessage);
-            throw err;
-        } finally {
-            setLoading(false);
-        }
-    };
+        },
+        onSuccess: (_data, newConfig) => {
+            queryClient.setQueryData(CONFIG_QUERY_KEY, {
+                ...DEFAULT_CONFIG,
+                ...newConfig,
+                itemPage: {
+                    ...DEFAULT_ITEM_PAGE_SETTINGS,
+                    ...newConfig.itemPage,
+                },
+            });
+        },
+    });
 
-    return { updateConfig, loading, error };
+    return {
+        updateConfig: mutation.mutateAsync,
+        loading: mutation.isPending,
+        error: mutation.error instanceof Error ? mutation.error.message : null,
+    };
 };
