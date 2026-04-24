@@ -19,7 +19,17 @@ import { useState, useEffect, memo } from 'react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Check, Trash2, Plus, Edit, ArrowUp, ArrowDown, Earth, Link2 } from 'lucide-react';
+import {
+    Check,
+    Trash2,
+    Plus,
+    Edit,
+    ArrowUp,
+    ArrowDown,
+    Earth,
+    Link2,
+    RotateCcw,
+} from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Switch } from '@/components/ui/switch';
 import {
@@ -46,6 +56,8 @@ import { Link, useSearchParams } from 'react-router';
 import { toast } from 'sonner';
 import { IconPicker, type IconName } from '../../components/ui/icon-picker';
 import { DynamicIcon } from 'lucide-react/dynamic';
+import { getAccessToken, getServerUrl } from '@/utils/localstorageCredentials';
+import FileDropInput from '@/components/FileDropInput';
 
 const StringInput = ({
     label,
@@ -620,6 +632,10 @@ const SettingsPage = () => {
     const [editingIndex, setEditingIndex] = useState<number | null>(null);
     const [serverThemeId, setServerThemeId] = useState<string | null>(null);
     const [serverName, setServerName] = useState<string>('');
+    const [logoLightUrl, setLogoLightUrl] = useState<string>('');
+    const [logoDarkUrl, setLogoDarkUrl] = useState<string>('');
+    const [logoLightFile, setLogoLightFile] = useState<File | null>(null);
+    const [logoDarkFile, setLogoDarkFile] = useState<File | null>(null);
     const { data: themes, isLoading: themesLoading } = useThemes();
     const { mutate: deleteTheme, isPending: isDeletingTheme } = useDeleteTheme();
     const [showThemeUploadDialog, setShowThemeUploadDialog] = useState(false);
@@ -661,6 +677,8 @@ const SettingsPage = () => {
         setHomeScreenSections(config?.homeScreenSections || []);
         setServerThemeId(config?.serverThemeId || null);
         setServerName(config?.serverName || '');
+        setLogoLightUrl(config?.logoLightUrl || '');
+        setLogoDarkUrl(config?.logoDarkUrl || '');
         setLinks(config?.links || []);
     }, [
         config?.serverAddress,
@@ -677,8 +695,65 @@ const SettingsPage = () => {
         config?.homeScreenSections,
         config?.serverThemeId,
         config?.serverName,
+        config?.logoLightUrl,
+        config?.logoDarkUrl,
         config?.links,
     ]);
+
+    const handleBrandingLogoUpload = async (mode: 'light' | 'dark', file: File) => {
+        const formData = new FormData();
+        formData.append('logo', file);
+
+        const jellyfinUrl = getServerUrl() || '';
+        const response = await fetch(
+            `/api/branding/logo/${mode}?jellyfin_url=${encodeURIComponent(jellyfinUrl)}`,
+            {
+                method: 'POST',
+                headers: {
+                    Authorization: getAccessToken() || '',
+                },
+                body: formData,
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error(`Failed to upload ${mode} logo`);
+        }
+
+        const payload = (await response.json()) as { url?: string };
+        const uploadedUrl = payload.url ? `${payload.url}?v=${Date.now()}` : '';
+
+        if (mode === 'light') {
+            setLogoLightUrl(uploadedUrl);
+        } else {
+            setLogoDarkUrl(uploadedUrl);
+        }
+    };
+
+    const handleResetBrandingLogo = async (mode: 'light' | 'dark') => {
+        const jellyfinUrl = getServerUrl() || '';
+        const response = await fetch(
+            `/api/branding/logo/${mode}?jellyfin_url=${encodeURIComponent(jellyfinUrl)}`,
+            {
+                method: 'DELETE',
+                headers: {
+                    Authorization: getAccessToken() || '',
+                },
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error(`Failed to reset ${mode} logo`);
+        }
+
+        if (mode === 'light') {
+            setLogoLightUrl('');
+            setLogoLightFile(null);
+        } else {
+            setLogoDarkUrl('');
+            setLogoDarkFile(null);
+        }
+    };
 
     const handleUpdateConfig = async () => {
         // update config takes in the whole config object, so we need to merge the existing config with the updated values
@@ -695,6 +770,8 @@ const SettingsPage = () => {
                     watchedStateBadgeSearch,
                     homeScreenSections,
                     serverName,
+                    logoLightUrl,
+                    logoDarkUrl,
                     serverThemeId: serverThemeId || undefined,
                     itemPage: {
                         ...config.itemPage,
@@ -809,6 +886,102 @@ const SettingsPage = () => {
                         placeholder={t('server_name_placeholder')}
                         description={t('server_name_description')}
                     />
+                    <StringInput
+                        label={t('logo_light_url_label')}
+                        value={logoLightUrl}
+                        onChange={setLogoLightUrl}
+                        placeholder={t('logo_url_placeholder')}
+                        description={t('logo_light_url_description')}
+                    />
+                    <div className="mt-3">
+                        <Label className="mb-2 block">{t('upload_light_logo_label')}</Label>
+                        <FileDropInput
+                            accept="image/*"
+                            value={logoLightFile}
+                            onChange={(file) => {
+                                setLogoLightFile(file);
+                                if (!file) return;
+
+                                void (async () => {
+                                    try {
+                                        await handleBrandingLogoUpload('light', file);
+                                        toast.success(t('logo_upload_success'));
+                                    } catch (uploadError) {
+                                        console.error('Error uploading light logo:', uploadError);
+                                        toast.error(t('logo_upload_error'));
+                                    } finally {
+                                        setLogoLightFile(null);
+                                    }
+                                })();
+                            }}
+                        />
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="mt-2"
+                            onClick={async () => {
+                                try {
+                                    await handleResetBrandingLogo('light');
+                                    toast.success(t('logo_reset_success'));
+                                } catch (resetError) {
+                                    console.error('Error resetting light logo:', resetError);
+                                    toast.error(t('logo_reset_error'));
+                                }
+                            }}
+                        >
+                            <RotateCcw />
+                            {t('reset_light_logo_label')}
+                        </Button>
+                    </div>
+                    <StringInput
+                        label={t('logo_dark_url_label')}
+                        value={logoDarkUrl}
+                        onChange={setLogoDarkUrl}
+                        placeholder={t('logo_url_placeholder')}
+                        description={t('logo_dark_url_description')}
+                    />
+                    <div className="mt-3">
+                        <Label className="mb-2 block">{t('upload_dark_logo_label')}</Label>
+                        <FileDropInput
+                            accept="image/*"
+                            value={logoDarkFile}
+                            onChange={(file) => {
+                                setLogoDarkFile(file);
+                                if (!file) return;
+
+                                void (async () => {
+                                    try {
+                                        await handleBrandingLogoUpload('dark', file);
+                                        toast.success(t('logo_upload_success'));
+                                    } catch (uploadError) {
+                                        console.error('Error uploading dark logo:', uploadError);
+                                        toast.error(t('logo_upload_error'));
+                                    } finally {
+                                        setLogoDarkFile(null);
+                                    }
+                                })();
+                            }}
+                        />
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="mt-2"
+                            onClick={async () => {
+                                try {
+                                    await handleResetBrandingLogo('dark');
+                                    toast.success(t('logo_reset_success'));
+                                } catch (resetError) {
+                                    console.error('Error resetting dark logo:', resetError);
+                                    toast.error(t('logo_reset_error'));
+                                }
+                            }}
+                        >
+                            <RotateCcw />
+                            {t('reset_dark_logo_label')}
+                        </Button>
+                    </div>
                 </TabsContent>
                 <TabsContent value="general" className="max-w-200">
                     <h1 className="mb-2 mt-2 text-2xl font-bold leading-none tracking-tight">

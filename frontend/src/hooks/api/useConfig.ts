@@ -215,6 +215,10 @@ export interface AppConfig {
     serverThemeId?: string;
     /** Custom name for the server to display in the UI */
     serverName?: string;
+    /** URL for the light mode logo */
+    logoLightUrl?: string;
+    /** URL for the dark mode logo */
+    logoDarkUrl?: string;
     /** Links to display in the UI */
     links?: ConfigLink[];
 }
@@ -234,6 +238,8 @@ const DEFAULT_CONFIG: AppConfig = {
     watchedStateBadgeSearch: false,
     links: [],
     serverName: 'Pelagica',
+    logoLightUrl: '',
+    logoDarkUrl: '',
     homeScreenSections: [
         {
             type: 'mediaBar',

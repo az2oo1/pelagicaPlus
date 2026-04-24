@@ -81,6 +81,10 @@ const AppSidebar = () => {
     const { theme } = useTheme();
     const effectiveTheme = getEffectiveTheme(theme);
     const [libraryOpen, setLibraryOpen] = useState(getLibraryCollapsibleState);
+    const defaultLogo = effectiveTheme === 'dark' ? '/logo.svg' : '/logo-dark.svg';
+    const configuredLogo =
+        effectiveTheme === 'dark' ? config?.logoDarkUrl || '' : config?.logoLightUrl || '';
+    const logoSrc = configuredLogo || defaultLogo;
 
     const libraries =
         views?.Items?.filter((library) =>
@@ -98,10 +102,7 @@ const AppSidebar = () => {
                         className="cursor-default hover:bg-transparent active:bg-transparent"
                     >
                         <Avatar className="h-8 w-8 p-1 rounded-lg">
-                            <AvatarImage
-                                src={effectiveTheme === 'dark' ? '/logo.svg' : '/logo-dark.svg'}
-                                alt={'Pelagica logo'}
-                            />
+                            <AvatarImage src={logoSrc} alt={'Pelagica logo'} />
                             <AvatarFallback className="rounded-lg">{'PE'}</AvatarFallback>
                         </Avatar>
                         <div className="grid flex-1 text-left text-sm leading-tight">
