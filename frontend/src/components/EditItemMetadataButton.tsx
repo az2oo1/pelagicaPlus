@@ -181,12 +181,12 @@ const EditItemMetadataButton = ({
     return (
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
             <DialogTrigger asChild>{trigger}</DialogTrigger>
-            <DialogContent className="sm:max-w-2xl max-h-[80vh] overflow-y-auto">
+            <DialogContent className="sm:max-w-2xl max-h-[80vh] flex flex-col">
                 <DialogHeader>
                     <DialogTitle>{t('edit_metadata_title')}</DialogTitle>
                     <DialogDescription>{t('edit_metadata_description')}</DialogDescription>
                 </DialogHeader>
-                <div className="space-y-8">
+                <div className="flex-1 overflow-y-auto space-y-8">
                     <div className="flex flex-col gap-1">
                         <label className="text-sm font-medium">{t('metadata_type')}</label>
                         <Select
