@@ -89,6 +89,11 @@ func WriteStatsConsent(consent bool) error {
 	if file == "" {
 		return fmt.Errorf("COLLECTOR_STATS_CONSENT_FILE is not set")
 	}
+
+	if err := os.MkdirAll(filepath.Dir(file), 0755); err != nil {
+		return fmt.Errorf("failed to create directories for stats consent file: %w", err)
+	}
+
 	value := "false"
 	if consent {
 		value = "true"
