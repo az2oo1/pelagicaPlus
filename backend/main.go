@@ -30,7 +30,10 @@ func main() {
 
 	handlers.InitThemeStore()
 
-	collector.RegisterStatsJob()
+	job := collector.RegisterStatsJob()
+	if job != nil {
+		defer job.Stop()
+	}
 
 	var protected fiber.Handler
 	if isAuthEnabled() {

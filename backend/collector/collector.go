@@ -170,7 +170,7 @@ func sendPing(baseURL, instanceID, version, token string) error {
 	}
 }
 
-func RegisterStatsJob() {
+func RegisterStatsJob() *cron.Cron {
 	c := cron.New()
 	_, err := c.AddFunc("0 0 * * *", func() {
 		if HasStatsConsent() != 0 {
@@ -192,9 +192,9 @@ func RegisterStatsJob() {
 	})
 	if err != nil {
 		fmt.Printf("Failed to register stats job: %v\n", err)
-		return
+		return nil
 	}
 	c.Start()
 	fmt.Println("Stats collection job registered to run daily at midnight")
-	defer c.Stop()
+	return c
 }
