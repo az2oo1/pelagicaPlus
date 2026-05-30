@@ -1,15 +1,15 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { setStatsConsent } from '@/api/stats';
+import { createTheme } from '@/api/themes';
 
 export function useCreateTheme() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async (consent: boolean) => {
-            return setStatsConsent(consent);
+        mutationFn: async (themeJson: string) => {
+            return createTheme(themeJson);
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['stats-consent'] });
+            queryClient.invalidateQueries({ queryKey: ['themes'] });
         },
     });
 }
