@@ -593,24 +593,15 @@ const TopBar = ({ overlay = false }: { overlay?: boolean }) => {
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="start">
-                            <DropdownMenuItem asChild>
-                                <Link to="/library">{t('library')}</Link>
-                            </DropdownMenuItem>
-                            {libraries.length > 0 && (
-                                <>
-                                    <DropdownMenuSeparator />
-                                    {libraries.map((lib) => (
-                                        <DropdownMenuItem key={lib.Id} asChild>
-                                            <Link to={`/library?library=${lib.Id}`}>
-                                                <JellyfinLibraryIcon
-                                                    libraryType={lib.CollectionType}
-                                                />
-                                                {lib.Name}
-                                            </Link>
-                                        </DropdownMenuItem>
-                                    ))}
-                                </>
-                            )}
+                            {libraries.length > 0 &&
+                                libraries.map((lib) => (
+                                    <DropdownMenuItem key={lib.Id} asChild>
+                                        <Link to={`/library?library=${lib.Id}`}>
+                                            <JellyfinLibraryIcon libraryType={lib.CollectionType} />
+                                            {lib.Name}
+                                        </Link>
+                                    </DropdownMenuItem>
+                                ))}
                         </DropdownMenuContent>
                     </DropdownMenu>
 
