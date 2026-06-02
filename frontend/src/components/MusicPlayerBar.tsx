@@ -59,9 +59,10 @@ const MusicPlayerBar = () => {
     const [isLyricsOpen, setIsLyricsOpen] = useState(false);
     const [showLyricsInline, setShowLyricsInline] = useState(false);
 
-    const { data: lyricsData } = useLyrics(currentTrack?.id);
+    const { data: lyricsData, isPending: isLyricsLoading } = useLyrics(currentTrack?.id);
     const processedLyrics = processLyrics(lyricsData);
     const hasLyrics = !!processedLyrics;
+    const showLyricsButton = isLyricsLoading || hasLyrics;
 
     useEffect(() => {
         setIsLyricsOpen(false);
@@ -224,8 +225,12 @@ const MusicPlayerBar = () => {
                         >
                             <Repeat2 />
                         </Button>
-                        {hasLyrics && (
-                            <LyricsButton active={showLyricsInline} onClick={toggleMobileLyrics} />
+                        {showLyricsButton && (
+                            <LyricsButton
+                                active={showLyricsInline}
+                                loading={isLyricsLoading}
+                                onClick={toggleMobileLyrics}
+                            />
                         )}
                     </div>
 
@@ -324,8 +329,12 @@ const MusicPlayerBar = () => {
                         </div>
                     </div>
                     <div className="flex flex-1 items-center justify-end gap-2">
-                        {hasLyrics && (
-                            <LyricsButton active={isLyricsOpen} onClick={toggleDesktopLyrics} />
+                        {showLyricsButton && (
+                            <LyricsButton
+                                active={isLyricsOpen}
+                                loading={isLyricsLoading}
+                                onClick={toggleDesktopLyrics}
+                            />
                         )}
                         <Button
                             variant="ghost"

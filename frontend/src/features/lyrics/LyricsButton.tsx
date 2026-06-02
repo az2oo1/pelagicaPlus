@@ -1,16 +1,20 @@
 import { Mic2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Spinner } from '@/components/ui/spinner';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 
 interface LyricsButtonProps {
     active?: boolean;
+    loading?: boolean;
     onClick: () => void;
     className?: string;
 }
 
-const LyricsButton = ({ active = false, onClick, className }: LyricsButtonProps) => {
+const LyricsButton = ({ active = false, loading = false, onClick, className }: LyricsButtonProps) => {
     const { t } = useTranslation('player');
+
+    const label = loading ? t('loadingLyrics') : active ? t('hideLyrics') : t('showLyrics');
 
     return (
         <Button
@@ -22,10 +26,12 @@ const LyricsButton = ({ active = false, onClick, className }: LyricsButtonProps)
                 className,
             )}
             onClick={onClick}
-            aria-label={active ? t('hideLyrics') : t('showLyrics')}
-            title={active ? t('hideLyrics') : t('showLyrics')}
+            disabled={loading}
+            aria-label={label}
+            aria-busy={loading}
+            title={label}
         >
-            <Mic2 />
+            {loading ? <Spinner /> : <Mic2 />}
         </Button>
     );
 };
