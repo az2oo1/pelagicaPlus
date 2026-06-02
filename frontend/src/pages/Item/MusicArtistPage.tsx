@@ -62,7 +62,7 @@ const MusicArtistPage = ({ item, config }: MusicArtistPageProps) => {
         if (!tracks?.length) return;
 
         loadQueue(
-            tracks.map((track) => ({
+            tracks.map((track: BaseItemDto) => ({
                 id: track.Id || '',
                 title: track.Name || '',
                 artist: item.Name || track.ArtistItems?.[0]?.Name || 'Unknown',
@@ -145,7 +145,7 @@ const MusicArtistPage = ({ item, config }: MusicArtistPageProps) => {
 
                     <div
                         className={cn(
-                            'flex min-h-0 min-w-0 flex-1 flex-col p-6 text-center md:h-full md:p-8 md:text-left',
+                            'flex min-h-0 min-w-0 flex-1 flex-col p-6 text-center md:h-full md:p-8 md:text-left !pb-2',
                             onPalette && 'text-white'
                         )}
                     >
@@ -236,7 +236,13 @@ const MusicArtistPage = ({ item, config }: MusicArtistPageProps) => {
                         </div>
 
                         {item.Overview && (
-                            <div className="mt-4 min-h-0 flex-1 md:overflow-y-auto md:overscroll-contain md:pr-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-white/30">
+                            <div className="mt-4 pb-6 min-h-0 flex-1 md:overflow-y-auto md:overscroll-contain md:pr-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-white/30"
+                                style={{
+                                    maskImage:
+                                        'linear-gradient(to bottom, black 85%, transparent 100%)',
+                                    WebkitMaskImage:
+                                        'linear-gradient(to bottom, black 85%, transparent 100%)',
+                                }}>
                                 <p
                                     className={cn(
                                         'text-sm leading-relaxed sm:text-base md:text-left',
