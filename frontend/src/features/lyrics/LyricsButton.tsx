@@ -18,7 +18,7 @@ const LyricsButton = ({ active = false, onClick, className }: LyricsButtonProps)
             size="icon"
             className={cn(
                 'cursor-pointer',
-                active ? 'text-brand' : 'text-muted-foreground',
+                active ? 'text-primary' : 'text-muted-foreground',
                 className,
             )}
             onClick={onClick}
