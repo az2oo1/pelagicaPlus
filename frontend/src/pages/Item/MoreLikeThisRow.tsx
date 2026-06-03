@@ -35,7 +35,8 @@ const MoreLikeThisRow: React.FC<MoreLikeThisRowProps> = memo(
             itemId,
             12
         );
-        const skeletonItems = posterShape === 'square' ? squareSkeletonItems : portraitSkeletonItems;
+        const skeletonItems =
+            posterShape === 'square' ? squareSkeletonItems : portraitSkeletonItems;
 
         const displayItems = useMemo(() => {
             if (!similarItems) return [];

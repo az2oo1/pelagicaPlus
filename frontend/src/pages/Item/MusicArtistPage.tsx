@@ -244,14 +244,12 @@ const MusicArtistPage = ({ item, config }: MusicArtistPageProps) => {
                                         !isOverviewExpanded && 'line-clamp-3 md:line-clamp-none'
                                     )}
                                     style={{
-                                        maskImage:
-                                            !isOverviewExpanded
-                                                ? 'linear-gradient(to bottom, black 85%, transparent 100%)'
-                                                : undefined,
-                                        WebkitMaskImage:
-                                            !isOverviewExpanded
-                                                ? 'linear-gradient(to bottom, black 85%, transparent 100%)'
-                                                : undefined,
+                                        maskImage: !isOverviewExpanded
+                                            ? 'linear-gradient(to bottom, black 85%, transparent 100%)'
+                                            : undefined,
+                                        WebkitMaskImage: !isOverviewExpanded
+                                            ? 'linear-gradient(to bottom, black 85%, transparent 100%)'
+                                            : undefined,
                                     }}
                                 >
                                     <p
