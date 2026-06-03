@@ -110,8 +110,8 @@ const PageContent = ({
             >
                 {breadcrumbs && <div className="flex items-center gap-2 mb-4">{breadcrumbs}</div>}
                 <main className={`w-full flex-1 ${className ?? ''}`}>{children}</main>
-                {showPlayerBar && <MusicPlayerBar />}
             </div>
+            {showPlayerBar && <MusicPlayerBar />}
         </div>
     );
 };
