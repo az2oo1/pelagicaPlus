@@ -90,8 +90,8 @@ const PlayerPage = () => {
         return saved ? parseInt(saved, 10) : 100;
     });
     const [subtitleOffset, setSubtitleOffset] = useState<number>(() => {
-        const saved = localStorage.getItem('playerSubtitleTimeOffset');
-        return saved ? parseFloat(saved) : 0;
+        const saved = localStorage.getItem('playerSubtitleOffset');
+        return saved ? parseInt(saved, 10) : 0;
     });
 
     useEffect(() => {
@@ -99,7 +99,7 @@ const PlayerPage = () => {
     }, [subtitleSize]);
 
     useEffect(() => {
-        localStorage.setItem('playerSubtitleTimeOffset', subtitleOffset.toString());
+        localStorage.setItem('playerSubtitleOffset', subtitleOffset.toString());
     }, [subtitleOffset]);
 
     const containerRef = useRef<HTMLDivElement>(null);
@@ -330,6 +330,7 @@ const PlayerPage = () => {
             className="relative w-full h-screen bg-black flex overflow-hidden"
             style={{
                 '--subtitle-size': `${subtitleSize}%`,
+                '--subtitle-offset': `${subtitleOffset}px`,
             } as React.CSSProperties}
         >
             {config.showContentAdvisory !== false && (
@@ -347,7 +348,6 @@ const PlayerPage = () => {
                 subtitles={subtitleTracks}
                 isAudioSwitchRef={isAudioSwitchRef}
                 subtitleTrackIndex={subtitleTrackIndex}
-                subtitleOffset={subtitleOffset}
             />
             <PlayerControls
                 item={item}

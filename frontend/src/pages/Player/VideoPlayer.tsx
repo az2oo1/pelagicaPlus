@@ -20,7 +20,6 @@ interface VideoPlayerProps {
     onReady?: (player: VideoJsPlayer) => void;
     isAudioSwitchRef: React.MutableRefObject<boolean>;
     subtitleTrackIndex: number | null;
-    subtitleOffset: number;
 }
 
 const VideoPlayer = ({
@@ -31,7 +30,6 @@ const VideoPlayer = ({
     onReady,
     isAudioSwitchRef,
     subtitleTrackIndex,
-    subtitleOffset,
 }: VideoPlayerProps) => {
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const playerRef = useRef<VideoJsPlayer | null>(null);
@@ -184,51 +182,6 @@ const VideoPlayer = ({
             document.removeEventListener('visibilitychange', handleVisibilityChange);
         };
     }, [subtitles, src, subtitleTrackIndex]);
-
-    useEffect(() => {
-        if (!playerRef.current) return;
-        const player = playerRef.current;
-
-        const applyOffset = () => {
-            const tracksList = player.textTracks() as any;
-            const tracks = tracksList.tracks_ || Array.from(tracksList);
-            for (let t = 0; t < tracks.length; t++) {
-                const track = tracks[t];
-                const cues = track.cues;
-                if (!cues) continue;
-                for (let i = 0; i < cues.length; i++) {
-                    const cue = cues[i] as any;
-                    if (cue.originalStartTime === undefined) {
-                        cue.originalStartTime = cue.startTime;
-                    }
-                    if (cue.originalEndTime === undefined) {
-                        cue.originalEndTime = cue.endTime;
-                    }
-                    cue.startTime = cue.originalStartTime + subtitleOffset;
-                    cue.endTime = cue.originalEndTime + subtitleOffset;
-                }
-            }
-        };
-
-        applyOffset();
-
-        const tracks = player.textTracks();
-        const handleTrackLoad = () => {
-            applyOffset();
-        };
-
-        tracks.addEventListener('addtrack', handleTrackLoad);
-        tracks.addEventListener('change', handleTrackLoad);
-
-        // Periodically verify or apply to handle late loaded remote tracks
-        const interval = setInterval(applyOffset, 1000);
-
-        return () => {
-            tracks.removeEventListener('addtrack', handleTrackLoad);
-            tracks.removeEventListener('change', handleTrackLoad);
-            clearInterval(interval);
-        };
-    }, [subtitleOffset]);
 
     return (
         <div

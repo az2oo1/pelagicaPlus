@@ -924,7 +924,7 @@ const PlayerControls = ({
                                     </div>
 
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuLabel>Subtitle Delay</DropdownMenuLabel>
+                                    <DropdownMenuLabel>Vertical Offset</DropdownMenuLabel>
                                     <div className="flex items-center justify-between px-3 py-1 text-xs">
                                         <Button
                                             variant="outline"
@@ -933,18 +933,12 @@ const PlayerControls = ({
                                             onClick={(e) => {
                                                 e.preventDefault();
                                                 e.stopPropagation();
-                                                setSubtitleOffset((prev) => Math.max(-10, parseFloat((prev - 0.5).toFixed(1))));
+                                                setSubtitleOffset((prev) => Math.max(0, prev - 10));
                                             }}
                                         >
                                             -
                                         </Button>
-                                        <span className="font-mono text-white">
-                                            {subtitleOffset === 0
-                                                ? '0.0s (Sync)'
-                                                : subtitleOffset > 0
-                                                  ? `+${subtitleOffset.toFixed(1)}s`
-                                                  : `${subtitleOffset.toFixed(1)}s`}
-                                        </span>
+                                        <span className="font-mono text-white">{subtitleOffset}px</span>
                                         <Button
                                             variant="outline"
                                             size="sm"
@@ -952,7 +946,7 @@ const PlayerControls = ({
                                             onClick={(e) => {
                                                 e.preventDefault();
                                                 e.stopPropagation();
-                                                setSubtitleOffset((prev) => Math.min(10, parseFloat((prev + 0.5).toFixed(1))));
+                                                setSubtitleOffset((prev) => Math.min(300, prev + 10));
                                             }}
                                         >
                                             +
