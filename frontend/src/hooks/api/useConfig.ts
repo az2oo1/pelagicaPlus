@@ -342,28 +342,6 @@ const DEFAULT_CONFIG: AppConfig = {
         },
         {
             type: 'items',
-            title: 'Top Rated Anime',
-            items: {
-                sortBy: ['CommunityRating'],
-                sortOrder: 'Descending',
-                limit: 10,
-                tags: ['Anime', 'anime'],
-            },
-            detailFields: ['CommunityRating'],
-        },
-        {
-            type: 'items',
-            title: 'Recently Released Anime',
-            items: {
-                sortBy: ['PremiereDate'],
-                sortOrder: 'Descending',
-                limit: 10,
-                tags: ['Anime', 'anime'],
-            },
-            detailFields: ['ReleaseYearAndMonth'],
-        },
-        {
-            type: 'items',
             title: 'Recently Released Movies',
             items: {
                 sortBy: ['PremiereDate'],
