@@ -150,6 +150,18 @@ export interface StudiosSection extends BaseHomeScreenSection {
     limit?: number;
 }
 
+export interface GenreRecommendedSection extends BaseHomeScreenSection {
+    type: 'genreRecommended';
+    /** How many genres to show as rows */
+    genreLimit?: number;
+    /** Items per genre row */
+    limit?: number;
+    /** Filter by media type */
+    mediaType?: 'Movie' | 'Series' | 'all';
+    /** Sort field for items within each genre */
+    sortBy?: ItemSortBy[];
+}
+
 export type HomeScreenSection =
     | MediaBarSection
     | RecentlyAddedSection
@@ -160,7 +172,8 @@ export type HomeScreenSection =
     | ResumeSection
     | GenresSection
     | LibrariesSection
-    | StudiosSection;
+    | StudiosSection
+    | GenreRecommendedSection;
 
 export const EPISODE_DISPLAYS = ['grid', 'row'] as const;
 export type EpisodeDisplay = (typeof EPISODE_DISPLAYS)[number];
@@ -414,6 +427,13 @@ const DEFAULT_CONFIG: AppConfig = {
                 types: ['Series'],
             },
             detailFields: ['ReleaseYear'],
+        },
+        {
+            type: 'genreRecommended',
+            genreLimit: 5,
+            limit: 10,
+            mediaType: 'all',
+            sortBy: ['CommunityRating'],
         },
         {
             type: 'recentlyAdded',
