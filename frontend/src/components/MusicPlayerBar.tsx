@@ -141,120 +141,160 @@ const MusicPlayerBar = () => {
         );
     }
 
-    if (isMobile && isExpanded) {
+    if (isExpanded) {
         return (
-            <div className="fixed inset-0 z-200 bg-background/95 backdrop-blur-lg flex flex-col animate-in slide-in-from-bottom duration-300">
-                <div className="flex justify-between items-center p-4 border-b">
-                    <Button variant="ghost" size="icon" onClick={() => setIsExpanded(false)}>
-                        <ChevronDown />
+            <div className="fixed inset-0 z-200 bg-black flex flex-col animate-in slide-in-from-bottom duration-300 text-foreground overflow-hidden">
+                {/* Blurred backdrop image */}
+                <div 
+                    className="absolute inset-0 bg-cover bg-center scale-110 opacity-35 blur-[80px] pointer-events-none -z-10 animate-fade-in duration-700"
+                    style={{ backgroundImage: `url(${getPrimaryImageUrl(currentTrack.albumId || currentTrack.id, { width: 300, height: 300 })})` }}
+                />
+                <div className="absolute inset-0 bg-black/60 -z-10 pointer-events-none" />
+
+                {/* Header */}
+                <div className="flex justify-between items-center p-4 border-b border-white/10 max-w-6xl mx-auto w-full relative z-10">
+                    <Button variant="ghost" size="icon" onClick={() => setIsExpanded(false)} className="hover:scale-110 active:scale-90 transition-transform text-white/80 hover:text-white hover:bg-white/10">
+                        <ChevronDown className="h-6 w-6" />
                     </Button>
-                    <span className="text-sm font-medium">
+                    <span className="text-xs font-bold tracking-widest uppercase text-white/60">
                         {showLyricsInline ? t('lyrics') : t('nowPlaying')}
                     </span>
-                    <Button variant="ghost" size="icon" onClick={clearPlayback}>
-                        <XIcon />
+                    <Button variant="ghost" size="icon" onClick={clearPlayback} className="hover:scale-110 active:scale-90 transition-transform text-white/80 hover:text-white hover:bg-white/10">
+                        <XIcon className="h-6 w-6" />
                     </Button>
                 </div>
 
-                <div className="flex min-h-0 flex-1 flex-col p-6 gap-6">
-                    {showLyricsInline && lyricsPanelProps ? (
-                        <LyricsInlinePanel {...lyricsPanelProps} />
-                    ) : (
-                        <>
-                            <div className="flex flex-1 flex-col items-center justify-center gap-6">
+                {/* Content Container */}
+                <div className="flex-1 overflow-y-auto max-w-6xl mx-auto w-full p-6 md:p-12 flex flex-col justify-center relative z-10">
+                    <div className={cn(
+                        "grid gap-12 items-center w-full",
+                        showLyricsInline && lyricsPanelProps ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1 max-w-xl mx-auto"
+                    )}>
+                        
+                        {/* Left column: Album details and cover */}
+                        <div className="flex flex-col items-start justify-center gap-6 w-full text-left max-w-sm mx-auto md:mx-0">
+                            <div className="relative group shadow-2xl rounded-lg overflow-hidden w-full aspect-square border border-white/10">
                                 <img
                                     src={getPrimaryImageUrl(currentTrack.albumId || currentTrack.id, {
-                                        width: 400,
-                                        height: 400,
+                                        width: 500,
+                                        height: 500,
                                     })}
                                     alt="Album cover"
-                                    className="rounded-lg w-full max-w-sm aspect-square object-cover shadow-2xl"
+                                    className="w-full h-full object-cover rounded-lg transition-transform duration-500 group-hover:scale-105"
                                 />
+                            </div>
 
-                                <div className="w-full max-w-sm text-center">
-                                    <h2 className="text-2xl font-bold truncate">
+                            <div className="w-full flex justify-between items-center gap-4">
+                                <div className="min-w-0 flex-1">
+                                    <h2 className="text-2xl sm:text-3xl font-extrabold truncate text-white tracking-tight leading-tight">
                                         {currentTrack.title}
                                     </h2>
-                                    <p className="text-lg text-muted-foreground truncate">
+                                    <p className="text-base sm:text-lg text-white/60 truncate mt-1 font-medium">
                                         {currentTrack.artist}
                                     </p>
                                 </div>
                             </div>
-                        </>
-                    )}
 
-                    <div className="w-full max-w-sm mx-auto space-y-2 shrink-0">
-                        <Slider
-                            className="w-full"
-                            max={durationSeconds}
-                            step={0.1}
-                            value={[currentTimeSeconds]}
-                            onValueChange={(value) => seek(Math.floor(value[0] * 10000000))}
-                        />
-                        <div className="flex justify-between text-sm text-muted-foreground">
-                            <span>{formatTime(currentTime)}</span>
-                            <span>{formatTime(duration)}</span>
+                            {/* Timeline Slider */}
+                            <div className="w-full space-y-2">
+                                <Slider
+                                    className="w-full cursor-pointer [&_[data-slot=slider-range]]:bg-white [&_[data-slot=slider-track]]:bg-white/20 [&_[data-slot=slider-thumb]]:bg-white"
+                                    max={durationSeconds}
+                                    step={0.1}
+                                    value={[currentTimeSeconds]}
+                                    onValueChange={(value) => seek(Math.floor(value[0] * 10000000))}
+                                />
+                                <div className="flex justify-between text-xs font-semibold text-white/50 tracking-wide">
+                                    <span>{formatTime(currentTime)}</span>
+                                    <span>{formatTime(duration)}</span>
+                                </div>
+                            </div>
+
+                            {/* Controls */}
+                            <div className="flex items-center justify-center gap-5 w-full mt-1">
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className={cn("hover:scale-110 active:scale-90 transition-transform duration-200 hover:bg-white/10", shuffle ? 'text-white font-semibold' : 'text-white/40')}
+                                    onClick={toggleShuffle}
+                                >
+                                    <Shuffle className="h-5 w-5" />
+                                </Button>
+                                <Button variant="ghost" size="icon" className="hover:scale-110 active:scale-90 transition-transform duration-200 text-white/80 hover:text-white hover:bg-white/10" onClick={skipPrevious}>
+                                    <SkipBack className="h-6 w-6" />
+                                </Button>
+                                <Button 
+                                    variant="default" 
+                                    size="icon-lg" 
+                                    className="h-14 w-14 rounded-full bg-white text-black hover:scale-105 active:scale-95 transition-all duration-200 hover:bg-white/95 shadow-lg flex items-center justify-center shrink-0" 
+                                    onClick={togglePlayPause}
+                                >
+                                    {isPlaying ? (
+                                        <Pause className="h-6 w-6 fill-current" />
+                                    ) : (
+                                        <Play className="h-6 w-6 fill-current ml-0.5" />
+                                    )}
+                                </Button>
+                                <Button variant="ghost" size="icon" className="hover:scale-110 active:scale-90 transition-transform duration-200 text-white/80 hover:text-white hover:bg-white/10" onClick={skipNext}>
+                                    <SkipForward className="h-6 w-6" />
+                                </Button>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className={cn("hover:scale-110 active:scale-90 transition-transform duration-200 hover:bg-white/10", repeat ? 'text-white font-semibold' : 'text-white/40')}
+                                    onClick={() => setRepeat(!repeat)}
+                                >
+                                    <Repeat2 className="h-5 w-5" />
+                                </Button>
+                                {showLyricsButton && (
+                                    <LyricsButton
+                                        active={showLyricsInline}
+                                        loading={isLyricsLoading}
+                                        onClick={toggleMobileLyrics}
+                                        className={cn(
+                                            "hover:scale-110 active:scale-90 transition-transform duration-200 hover:bg-white/10",
+                                            showLyricsInline ? 'text-white bg-white/15' : 'text-white/40'
+                                        )}
+                                    />
+                                )}
+                            </div>
+
+                            {/* Volume controls */}
+                            <div className="flex items-center gap-3 w-full mt-1">
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="hover:scale-110 active:scale-90 transition-transform text-white/80 hover:text-white hover:bg-white/10"
+                                    onClick={() => {
+                                        if (volume === 0) setVolume(0.5);
+                                        else setVolume(0);
+                                    }}
+                                >
+                                    {volume === 0 ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
+                                </Button>
+                                <Slider
+                                    className="flex-1 cursor-pointer [&_[data-slot=slider-range]]:bg-white [&_[data-slot=slider-track]]:bg-white/20 [&_[data-slot=slider-thumb]]:bg-white"
+                                    max={1}
+                                    step={0.01}
+                                    value={[volume]}
+                                    onValueChange={(value) => setVolume(value[0])}
+                                />
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="flex items-center justify-center gap-4 w-full max-w-sm mx-auto shrink-0">
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className={cn("hover:scale-110 active:scale-90 transition-transform duration-200", shuffle ? 'text-brand' : 'text-muted-foreground')}
-                            onClick={toggleShuffle}
-                        >
-                            <Shuffle />
-                        </Button>
-                        <Button variant="ghost" size="icon-lg" className="hover:scale-110 active:scale-90 transition-transform duration-200" onClick={skipPrevious}>
-                            <SkipBack className="h-8 w-8" />
-                        </Button>
-                        <Button variant="default" size="icon-lg" className="hover:scale-105 active:scale-95 transition-transform duration-200 ease-out" onClick={togglePlayPause}>
-                            {isPlaying ? (
-                                <Pause className="h-8 w-8" />
-                            ) : (
-                                <Play className="h-8 w-8" />
-                            )}
-                        </Button>
-                        <Button variant="ghost" size="icon-lg" className="hover:scale-110 active:scale-90 transition-transform duration-200" onClick={skipNext}>
-                            <SkipForward className="h-8 w-8" />
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className={cn("hover:scale-110 active:scale-90 transition-transform duration-200", repeat ? 'text-brand' : 'text-muted-foreground')}
-                            onClick={() => setRepeat(!repeat)}
-                        >
-                            <Repeat2 />
-                        </Button>
-                        {showLyricsButton && (
-                            <LyricsButton
-                                active={showLyricsInline}
-                                loading={isLyricsLoading}
-                                onClick={toggleMobileLyrics}
-                            />
+                        {/* Right column: Integrated Apple Music-style lyrics (Not in a box) */}
+                        {showLyricsInline && lyricsPanelProps && (
+                            <div 
+                                className="w-full h-[55vh] min-h-[300px] md:h-[65vh] overflow-hidden flex flex-col animate-in fade-in slide-in-from-right-4 duration-300 [&_div]:!items-start [&_div.pointer-events-none]:!hidden [&_div]:[scrollbar-width:none] [&_div]:[-ms-overflow-style:none] [&_div::-webkit-scrollbar]:!w-0 [&_div::-webkit-scrollbar]:!h-0 [&_div::-webkit-scrollbar]:!bg-transparent [&_div.px-4]:!pt-6 [&_div.px-4]:!pb-48 [&_button]:!text-left [&_button]:!max-w-none [&_button]:!px-0 [&_button]:!py-3.5 [&_button]:!text-3xl [&_button]:!font-bold [&_button]:!text-white/30 [&_button]:!bg-transparent [&_button]:!border-none [&_button]:!shadow-none [&_button]:!transform-none [&_button.text-foreground]:!text-white [&_button.text-foreground]:!text-4xl [&_button.text-foreground]:!font-extrabold"
+                                style={{
+                                    maskImage: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,1) 12%, rgba(0,0,0,1) 85%, transparent 100%)',
+                                    WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,1) 12%, rgba(0,0,0,1) 85%, transparent 100%)'
+                                }}
+                            >
+                                <LyricsInlinePanel {...lyricsPanelProps} />
+                            </div>
                         )}
-                    </div>
 
-                    <div className="flex items-center gap-2 w-full max-w-sm mx-auto shrink-0">
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="hover:scale-110 active:scale-90 transition-transform duration-200"
-                            onClick={() => {
-                                if (volume === 0) setVolume(0.5);
-                                else setVolume(0);
-                            }}
-                        >
-                            {volume === 0 ? <VolumeX /> : <Volume2 />}
-                        </Button>
-                        <Slider
-                            className="flex-1"
-                            max={1}
-                            step={0.01}
-                            value={[volume]}
-                            onValueChange={(value) => setVolume(value[0])}
-                        />
                     </div>
                 </div>
             </div>
@@ -265,16 +305,25 @@ const MusicPlayerBar = () => {
         <div className="sticky bottom-0 z-100 w-full p-4 sm:px-12">
             <div className="relative">
                 <div className="relative z-10 flex w-full items-center justify-between rounded-lg border border-sidebar-border bg-sidebar/90 p-3 shadow-sm backdrop-blur-lg">
-                    <div className="flex flex-1 items-center gap-2">
-                        <img
-                            src={getPrimaryImageUrl(currentTrack.albumId || currentTrack.id, {
-                                width: 64,
-                                height: 64,
-                            })}
-                            alt="Album cover"
-                            className="rounded-md h-16 w-16 object-cover self-center"
-                        />
-                        <div className="grid flex-1 text-left leading-tight">
+                    <div className="flex flex-1 items-center gap-3">
+                        <button
+                            onClick={() => setIsExpanded(true)}
+                            className="group relative cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-md overflow-hidden shrink-0 shadow-sm border border-sidebar-border"
+                            aria-label="Expand player"
+                        >
+                            <img
+                                src={getPrimaryImageUrl(currentTrack.albumId || currentTrack.id, {
+                                    width: 64,
+                                    height: 64,
+                                })}
+                                alt="Album cover"
+                                className="rounded-md h-16 w-16 object-cover transition-transform duration-300 group-hover:scale-105"
+                            />
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300">
+                                <span className="text-[10px] font-bold text-white uppercase tracking-wider">Expand</span>
+                            </div>
+                        </button>
+                        <div className="grid flex-1 text-left leading-tight min-w-0">
                             <span className="truncate font-medium">{currentTrack.title}</span>
                             <span className="truncate text-sm font-normal text-muted-foreground">
                                 {currentTrack.artist}

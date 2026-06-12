@@ -158,23 +158,37 @@ export const SpatialNavigation = () => {
                 element.focus({ preventScroll: true });
                 
                 const isHorizontal = ['ArrowLeft', 'ArrowRight'].includes(direction);
-                const inHeader = element.closest('header') !== null;
+                
+                const isControl = element.tagName === 'BUTTON' || 
+                                  element.tagName === 'SELECT' || 
+                                  element.closest('[role="tablist"]') !== null ||
+                                  element.closest('header') !== null ||
+                                  element.closest('.sticky') !== null ||
+                                  element.closest('.fixed') !== null;
 
-                if (inHeader) {
+                if (isControl) {
                     element.scrollIntoView({
                         behavior: 'smooth',
-                        block: 'nearest',
+                        block: isHorizontal ? 'nearest' : 'center',
                         inline: 'nearest',
                     });
                 } else {
-                    const parent = element.parentElement;
-                    if (parent && element === parent.firstElementChild) {
-                        parent.scrollTo({ left: 0, behavior: 'smooth' });
+                    if (isHorizontal) {
+                        const parent = element.parentElement;
+                        if (parent && element === parent.firstElementChild) {
+                            parent.scrollTo({ left: 0, behavior: 'smooth' });
+                        } else {
+                            element.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'nearest',
+                                inline: 'start',
+                            });
+                        }
                     } else {
                         element.scrollIntoView({
                             behavior: 'smooth',
-                            block: isHorizontal ? 'nearest' : 'center',
-                            inline: 'start',
+                            block: 'center',
+                            inline: 'nearest',
                         });
                     }
                 }
