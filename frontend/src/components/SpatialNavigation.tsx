@@ -25,6 +25,8 @@ const getFocusableElements = (container: HTMLElement | Document = document): HTM
 
 export const SpatialNavigation = () => {
     useEffect(() => {
+        let lastMoveTime = 0;
+
         // Try focusing home button on mount
         const timer = setTimeout(() => {
             const homeBtn = document.getElementById('home-nav-button');
@@ -34,6 +36,18 @@ export const SpatialNavigation = () => {
         }, 150);
 
         const handleKeyDown = (e: KeyboardEvent) => {
+            const direction = e.key;
+            if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(direction)) {
+                return;
+            }
+
+            const now = Date.now();
+            if (now - lastMoveTime < 110) {
+                e.preventDefault();
+                e.stopPropagation();
+                return;
+            }
+
             const activeEl = document.activeElement as HTMLElement;
             
             // Ignore key events if focus is inside editable fields or if select/dropdown contents are open (letting Radix handle listboxes/menus)
@@ -45,11 +59,6 @@ export const SpatialNavigation = () => {
                 activeEl.closest('[role="menu"], [role="listbox"], [data-slot="dropdown-menu-content"], [data-slot="dropdown-menu-sub-content"], [data-slot="select-content"]') !== null
             );
             if (shouldBypass) {
-                return;
-            }
-
-            const direction = e.key;
-            if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(direction)) {
                 return;
             }
 
@@ -72,6 +81,7 @@ export const SpatialNavigation = () => {
                         block: 'center',
                         inline: 'center',
                     });
+                    lastMoveTime = now;
                 }
                 return;
             }
@@ -155,10 +165,11 @@ export const SpatialNavigation = () => {
                     block: isHorizontal ? 'nearest' : 'center',
                     inline: 'center',
                 });
+                lastMoveTime = now;
             }
         };
 
-        // Attach event listener in the capture phase to intercept keys before component-specific default roving handlers
+        // Attach event listener in the capture phase to intercept keys before component-specific roving handlers
         window.addEventListener('keydown', handleKeyDown, { capture: true });
         return () => {
             clearTimeout(timer);
