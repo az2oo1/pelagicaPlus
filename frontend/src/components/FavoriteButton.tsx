@@ -17,6 +17,7 @@ interface FavoriteButtonProps {
         | 'ghost'
         | null
         | undefined;
+    tabIndex?: number;
 }
 
 const FavoriteButton = ({
@@ -24,6 +25,7 @@ const FavoriteButton = ({
     showFavoriteButton,
     size = 'icon',
     variant = 'outline',
+    tabIndex,
 }: FavoriteButtonProps) => {
     const { isFavorite, toggleFavorite, isLoading: isFavoriteLoading } = useFavorite(item.Id);
 
@@ -35,6 +37,7 @@ const FavoriteButton = ({
             size={size}
             onClick={() => toggleFavorite(!isFavorite)}
             disabled={isFavoriteLoading}
+            tabIndex={tabIndex}
             className="hover:scale-105 active:scale-95 transition-transform duration-200 ease-out"
         >
             <Heart

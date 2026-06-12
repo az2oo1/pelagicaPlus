@@ -50,28 +50,28 @@ const LibraryItem = ({
         <Link
             to={`/item/${item.Id}`}
             key={item.Id}
-            className="p-0 m-0"
+            className="p-0 m-0 group block outline-none focus:outline-none focus-visible:outline-none"
             onClick={handleClick}
         >
             <div
-                className={cn("relative w-full overflow-hidden rounded-md group", aspectClass)}
+                className={cn("relative w-full overflow-hidden rounded-md", aspectClass)}
             >
                 {!posterError ? (
                     <>
                         <img
-                            key={item.Id}
-                            src={posterUrl}
-                            alt={item.Name || t('library:no_title')}
-                            className={cn(
-                                'w-full h-full object-cover rounded-md transform-gpu will-change-transform z-10 poster-image',
-                                isImageLoaded
-                                    ? 'blur-0 opacity-100 scale-100'
-                                    : 'blur-md opacity-40 scale-95',
-                                isImageLoaded && 'group-hover:opacity-90 group-hover:scale-105'
-                            )}
-                            loading="lazy"
-                            onLoad={() => setIsImageLoaded(true)}
-                            onError={() => setPosterError(true)}
+                             key={item.Id}
+                             src={posterUrl}
+                             alt={item.Name || t('library:no_title')}
+                             className={cn(
+                                 'w-full h-full object-cover rounded-md transform-gpu will-change-transform z-10 poster-image',
+                                 isImageLoaded
+                                     ? 'blur-0 opacity-100 scale-100'
+                                     : 'blur-md opacity-40 scale-95',
+                                 isImageLoaded && 'group-hover:opacity-90 group-hover:scale-105 group-focus-within:opacity-90 group-focus-within:scale-105 group-focus:opacity-90 group-focus:scale-105'
+                             )}
+                             loading="lazy"
+                             onLoad={() => setIsImageLoaded(true)}
+                             onError={() => setPosterError(true)}
                         />
                         <Skeleton className="absolute bottom-0 left-0 right-0 top-0 -z-1" />
                         <div className="absolute inset-0 rounded-md pointer-events-none poster-card-outline z-20" />

@@ -66,6 +66,7 @@ export default function SectionScroller({
                         disabled={!canScrollLeft}
                         size={'icon'}
                         variant={'outline'}
+                        tabIndex={-1}
                     >
                         <ChevronLeft />
                     </Button>
@@ -74,6 +75,7 @@ export default function SectionScroller({
                         disabled={!canScrollRight}
                         size={'icon'}
                         variant={'outline'}
+                        tabIndex={-1}
                     >
                         <ChevronRight />
                     </Button>

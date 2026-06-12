@@ -131,132 +131,137 @@ const MediaBar = ({
                         </CarouselItem>
                     )}
                     {mediabarItems &&
-                        mediabarItems.map((item) => (
-                            <CarouselItem key={item.Id}>
-                                <div
-                                    className={`flex flex-col items-start justify-end gap-4 relative ${outerSize}`}
-                                >
-                                    <div className="flex flex-col items-start gap-4 max-w-2xl px-6 sm:px-12 py-6 relative z-10">
-                                        {getLogoUrl(item.Id!) && !logoErrors.has(item.Id!) ? (
-                                            <img
-                                                src={getLogoUrl(item.Id!)}
-                                                alt={item.Name || 'Item Logo'}
-                                                className={`${logoSize} h-full object-contain`}
-                                                onError={() => handleLogoError(item.Id!)}
-                                            />
-                                        ) : (
-                                            <h2 className="text-2xl sm:text-4xl font-bold">
-                                                {item.Name}
-                                            </h2>
-                                        )}
-                                        {item.GenreItems && item.GenreItems.length > 0 && (
-                                            <div className="flex flex-wrap gap-2">
-                                                {item.GenreItems.map((genre) => (
-                                                    <Badge
-                                                        variant={'outline'}
-                                                        key={genre.Id}
-                                                        data-id={genre.Id}
-                                                        className="text-white"
-                                                    >
-                                                        {genre.Name}
-                                                    </Badge>
-                                                ))}
-                                            </div>
-                                        )}
-                                        <div className="flex flex-wrap items-center gap-4 text-sm text-gray-300">
-                                            {item.PremiereDate && (
-                                                <span>
-                                                    {new Date(item.PremiereDate).getFullYear()}
-                                                </span>
+                        mediabarItems.map((item, idx) => {
+                            const isActive = idx === activeIndex;
+                            return (
+                                <CarouselItem key={item.Id}>
+                                    <div
+                                        className={`flex flex-col items-start justify-end gap-4 relative ${outerSize}`}
+                                    >
+                                        <div className="flex flex-col items-start gap-4 max-w-2xl px-6 sm:px-12 py-6 relative z-10">
+                                            {getLogoUrl(item.Id!) && !logoErrors.has(item.Id!) ? (
+                                                <img
+                                                    src={getLogoUrl(item.Id!)}
+                                                    alt={item.Name || 'Item Logo'}
+                                                    className={`${logoSize} h-full object-contain`}
+                                                    onError={() => handleLogoError(item.Id!)}
+                                                />
+                                            ) : (
+                                                <h2 className="text-2xl sm:text-4xl font-bold">
+                                                    {item.Name}
+                                                </h2>
                                             )}
-                                            {item.Type === 'Series' && item.ChildCount && (
-                                                <span>
-                                                    {item.ChildCount === 1
-                                                        ? t('season_count', {
-                                                              count: item.ChildCount,
-                                                          })
-                                                        : t('season_count_plural', {
-                                                              count: item.ChildCount,
-                                                          })}
-                                                </span>
-                                            )}
-                                            {item.Type === 'Series' && item.RecursiveItemCount && (
-                                                <span>
-                                                    {item.RecursiveItemCount === 1
-                                                        ? t('episode_count', {
-                                                              count: item.RecursiveItemCount,
-                                                          })
-                                                        : t('episode_count_plural', {
-                                                              count: item.RecursiveItemCount,
-                                                          })}
-                                                </span>
-                                            )}
-                                            {item.Type !== 'Series' &&
-                                                item.RunTimeTicks &&
-                                                item.RunTimeTicks > 0 && (
-                                                    <>
-                                                        <span>
-                                                            {ticksToReadableTime(item.RunTimeTicks)}
-                                                        </span>
-                                                        <span>
-                                                            {t('ends_at', {
-                                                                date: getEndsAt(
-                                                                    item.RunTimeTicks!
-                                                                ).toLocaleTimeString([], {
-                                                                    hour: '2-digit',
-                                                                    minute: '2-digit',
-                                                                }),
-                                                            })}
-                                                        </span>
-                                                    </>
-                                                )}
-                                            {item.CommunityRating && (
-                                                <div className="flex items-center gap-1">
-                                                    <Star size={14} />
-                                                    <span>{item.CommunityRating.toFixed(1)}</span>
+                                            {item.GenreItems && item.GenreItems.length > 0 && (
+                                                <div className="flex flex-wrap gap-2">
+                                                    {item.GenreItems.map((genre) => (
+                                                        <Badge
+                                                            variant={'outline'}
+                                                            key={genre.Id}
+                                                            data-id={genre.Id}
+                                                            className="text-white"
+                                                        >
+                                                            {genre.Name}
+                                                        </Badge>
+                                                    ))}
                                                 </div>
                                             )}
-                                        </div>
-                                        <p className="text-sm line-clamp-2 text-gray-300">
-                                            {item.Overview}
-                                        </p>
-                                        <div className="flex items-center gap-2">
-                                            <Button variant="default" size="lg" className="hover:scale-105 active:scale-95 transition-transform duration-200 ease-out" asChild>
-                                                <Link to={`/play/${item.Id}`}>
-                                                    <Play />
-                                                    {t('play')}
-                                                </Link>
-                                            </Button>
-                                            <Button variant="outline" size="lg" className="hover:scale-105 active:scale-95 transition-transform duration-200 ease-out flex items-center gap-2 bg-black/40 border-white/10 text-white hover:bg-black/60" asChild>
-                                                <Link to={`/item/${item.Id}`}>
-                                                    <Info className="w-5 h-5" />
-                                                    {t('more_info', { defaultValue: 'More Info' })}
-                                                </Link>
-                                            </Button>
-                                            {showFavoriteButton !== false && (
-                                                <FavoriteButton
-                                                    item={item}
-                                                    size={'icon-lg'}
-                                                    variant={'outline'}
-                                                />
-                                            )}
-                                            {showWatchlistButton !== false && (
-                                                <WatchListButton
-                                                    item={item}
-                                                    size={'icon-lg'}
-                                                    variant={'outline'}
-                                                />
-                                            )}
+                                            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-300">
+                                                {item.PremiereDate && (
+                                                    <span>
+                                                        {new Date(item.PremiereDate).getFullYear()}
+                                                    </span>
+                                                )}
+                                                {item.Type === 'Series' && item.ChildCount && (
+                                                    <span>
+                                                        {item.ChildCount === 1
+                                                            ? t('season_count', {
+                                                                  count: item.ChildCount,
+                                                              })
+                                                            : t('season_count_plural', {
+                                                                  count: item.ChildCount,
+                                                              })}
+                                                    </span>
+                                                )}
+                                                {item.Type === 'Series' && item.RecursiveItemCount && (
+                                                    <span>
+                                                        {item.RecursiveItemCount === 1
+                                                            ? t('episode_count', {
+                                                                  count: item.RecursiveItemCount,
+                                                              })
+                                                            : t('episode_count_plural', {
+                                                                  count: item.RecursiveItemCount,
+                                                              })}
+                                                    </span>
+                                                )}
+                                                {item.Type !== 'Series' &&
+                                                    item.RunTimeTicks &&
+                                                    item.RunTimeTicks > 0 && (
+                                                        <>
+                                                            <span>
+                                                                {ticksToReadableTime(item.RunTimeTicks)}
+                                                            </span>
+                                                            <span>
+                                                                {t('ends_at', {
+                                                                    date: getEndsAt(
+                                                                        item.RunTimeTicks!
+                                                                    ).toLocaleTimeString([], {
+                                                                        hour: '2-digit',
+                                                                        minute: '2-digit',
+                                                                    }),
+                                                                })}
+                                                            </span>
+                                                        </>
+                                                    )}
+                                                {item.CommunityRating && (
+                                                    <div className="flex items-center gap-1">
+                                                        <Star size={14} />
+                                                        <span>{item.CommunityRating.toFixed(1)}</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <p className="text-sm line-clamp-2 text-gray-300">
+                                                {item.Overview}
+                                            </p>
+                                            <div className="flex items-center gap-2">
+                                                <Button variant="default" size="lg" className="hover:scale-105 active:scale-95 transition-transform duration-200 ease-out" asChild>
+                                                    <Link to={`/play/${item.Id}`} tabIndex={isActive ? 0 : -1}>
+                                                        <Play />
+                                                        {t('play')}
+                                                    </Link>
+                                                </Button>
+                                                <Button variant="outline" size="lg" className="hover:scale-105 active:scale-95 transition-transform duration-200 ease-out flex items-center gap-2 bg-black/40 border-white/10 text-white hover:bg-black/60" asChild>
+                                                    <Link to={`/item/${item.Id}`} tabIndex={isActive ? 0 : -1}>
+                                                        <Info className="w-5 h-5" />
+                                                        {t('more_info', { defaultValue: 'More Info' })}
+                                                    </Link>
+                                                </Button>
+                                                {showFavoriteButton !== false && (
+                                                    <FavoriteButton
+                                                        item={item}
+                                                        size={'icon-lg'}
+                                                        variant={'outline'}
+                                                        tabIndex={isActive ? 0 : -1}
+                                                    />
+                                                )}
+                                                {showWatchlistButton !== false && (
+                                                    <WatchListButton
+                                                        item={item}
+                                                        size={'icon-lg'}
+                                                        variant={'outline'}
+                                                        tabIndex={isActive ? 0 : -1}
+                                                    />
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </CarouselItem>
-                        ))}
+                                </CarouselItem>
+                            );
+                        })}
                 </CarouselContent>
                 {!isError && (
                     <>
-                        <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10 hidden sm:flex" />
-                        <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10 hidden sm:flex" />
+                        <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10 hidden sm:flex" tabIndex={-1} />
+                        <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10 hidden sm:flex" tabIndex={-1} />
                     </>
                 )}
             </Carousel>

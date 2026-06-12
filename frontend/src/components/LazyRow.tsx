@@ -18,7 +18,7 @@ export const LazyRow = ({ children, placeholderHeight = '280px' }: PropsWithChil
                 }
             },
             {
-                rootMargin: '400px 0px', // Preload when the row is within 400px of the viewport
+                rootMargin: '1000px 0px', // Preload when the row is within 1000px of the viewport
             }
         );
 

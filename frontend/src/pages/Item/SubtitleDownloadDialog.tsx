@@ -237,7 +237,7 @@ const SubtitleDownloadDialog = ({ item, trigger }: SubtitleDownloadDialogProps) 
                     <DialogDescription>{t('subtitle_download_description')}</DialogDescription>
                 </DialogHeader>
 
-                <Tabs defaultValue="local" className="flex-1 flex flex-col min-h-0">
+                <Tabs defaultValue="local" className="flex-1 flex flex-col min-h-0" activationMode="manual">
                     <TabsList className="grid grid-cols-2 mb-4 shrink-0">
                         <TabsTrigger value="local">{t('local_subtitles')}</TabsTrigger>
                         <TabsTrigger value="online">{t('online_subtitles')}</TabsTrigger>

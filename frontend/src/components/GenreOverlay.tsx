@@ -66,10 +66,10 @@ export const GenreOverlay = ({ item, show }: GenreOverlayProps) => {
                     <div
                         key={genre}
                         className={cn(
-                            // Pill: fixed height, expands width only. Icon pinned right, text reveals left.
-                            'flex flex-row-reverse items-center bg-black/70 border border-white/10 backdrop-blur-xs text-white text-[10px] font-medium rounded-full h-6 px-1.5 transition-[width] duration-300 ease-out shadow-sm overflow-hidden',
-                            // Collapsed = just icon width; hovered = auto width with text
-                            'w-6 group-hover:w-auto'
+                            // Pill: fixed height, expands max-width. Icon pinned right, text reveals left.
+                            'flex flex-row-reverse items-center bg-black/70 border border-white/10 backdrop-blur-xs text-white text-[10px] font-medium rounded-full h-6 px-1.5 shadow-sm overflow-hidden transition-[max-width] duration-300 ease-out',
+                            // Collapsed = just icon width; hovered/focused = expanded max-width
+                            'w-auto max-w-6 group-hover:max-w-32 group-focus-within:max-w-32 group-focus:max-w-32'
                         )}
                     >
                         {/* Icon stays pinned — never moves */}
@@ -80,6 +80,8 @@ export const GenreOverlay = ({ item, show }: GenreOverlayProps) => {
                                 'whitespace-nowrap overflow-hidden',
                                 'max-w-0 opacity-0 mr-0',
                                 'group-hover:max-w-24 group-hover:opacity-100 group-hover:mr-1.5',
+                                'group-focus-within:max-w-24 group-focus-within:opacity-100 group-focus-within:mr-1.5',
+                                'group-focus:max-w-24 group-focus:opacity-100 group-focus:mr-1.5',
                                 'transition-[max-width,opacity,margin] duration-300 ease-out'
                             )}
                         >

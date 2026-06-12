@@ -315,6 +315,7 @@ const LibraryPage = () => {
                 value={activeLibraryId}
                 onValueChange={handleLibraryChange}
                 className="w-full"
+                activationMode="manual"
             >
                 <div className="flex flex-col sm:items-center sm:justify-between sm:flex-row gap-2">
                     <TabsList className="max-w-full overflow-auto">
@@ -335,7 +336,11 @@ const LibraryPage = () => {
                                 }}
                                 value={itemType}
                             >
-                                <SelectTrigger size="sm">
+                                <SelectTrigger size="sm" onKeyDown={(e) => {
+                                    if (['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                                        e.preventDefault();
+                                    }
+                                }}>
                                     <SelectValue placeholder="Type" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -363,7 +368,11 @@ const LibraryPage = () => {
                             }}
                             value={sortBy}
                         >
-                            <SelectTrigger size="sm">
+                            <SelectTrigger size="sm" onKeyDown={(e) => {
+                                if (['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                                    e.preventDefault();
+                                }
+                            }}>
                                 <SelectValue placeholder="Sort" />
                             </SelectTrigger>
                             <SelectContent>
@@ -418,7 +427,11 @@ const LibraryPage = () => {
                             }}
                             value={sortOrder}
                         >
-                            <SelectTrigger size="sm">
+                            <SelectTrigger size="sm" onKeyDown={(e) => {
+                                if (['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                                    e.preventDefault();
+                                }
+                            }}>
                                 <SelectValue placeholder="Order" />
                             </SelectTrigger>
                             <SelectContent>

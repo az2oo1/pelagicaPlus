@@ -68,7 +68,7 @@ export function BaseContinueRow({
                                       <Link
                                           to={`/item/${item.Id}`}
                                           key={item.Id}
-                                          className="group w-min min-w-48 lg:min-w-64 2xl:min-w-80"
+                                          className="group w-min min-w-48 lg:min-w-64 2xl:min-w-80 block outline-none focus:outline-none focus-visible:outline-none"
                                       >
                                           <div className="relative w-full aspect-video rounded-md overflow-hidden">
                                               {imageErrors[item.Id!] ? (
@@ -103,7 +103,7 @@ export function BaseContinueRow({
                                                                   ? 'blur-0 opacity-100 scale-100'
                                                                   : 'blur-md opacity-40 scale-95',
                                                               loadedImages[item.Id!] &&
-                                                                  'group-hover:opacity-90 group-hover:scale-105'
+                                                                  'group-hover:opacity-90 group-hover:scale-105 group-focus-within:opacity-90 group-focus-within:scale-105 group-focus:opacity-90 group-focus:scale-105'
                                                           )}
                                                           onLoad={() => handleImageLoad(item.Id!)}
                                                           onError={() => handleImageError(item.Id!)}
@@ -120,7 +120,7 @@ export function BaseContinueRow({
                                                       />
                                                   </div>
                                               )}
-                                               <div className="absolute bottom-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-30">
+                                               <div className="absolute bottom-2 left-2 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 group-focus:opacity-100 transition-opacity duration-150 z-30">
                                                    <div
                                                        className="flex items-center justify-center backdrop-blur-md bg-black/40 border border-white/15 rounded-full w-9 h-9 cursor-pointer hover:bg-black/60"
                                                        role="button"

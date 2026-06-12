@@ -145,7 +145,7 @@ const ItemsRow = ({ title, allLink, items, detailFields }: ItemsRowProps) => {
                 className="max-w-full"
                 title={
                     allLink ? (
-                        <Link to={allLink} className="flex items-center gap-1 group cursor-pointer w-fit hover:text-primary transition-colors">
+                        <Link to={allLink} className="flex items-center gap-1 group cursor-pointer w-fit hover:text-primary transition-colors" tabIndex={-1}>
                             <h2 className="text-2xl font-bold">{title}</h2>
                             <ChevronRight className="w-7 h-7 opacity-50 group-hover:opacity-100 transition-opacity" />
                         </Link>

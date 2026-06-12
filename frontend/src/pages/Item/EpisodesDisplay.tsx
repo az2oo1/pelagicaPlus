@@ -32,7 +32,7 @@ const EpisodeCardImage = memo(
                         isLoaded
                             ? 'blur-0 opacity-100 scale-100'
                             : 'blur-md opacity-40 scale-95',
-                        isLoaded && 'group-hover:opacity-90 group-hover:scale-105'
+                        isLoaded && 'group-hover:opacity-90 group-hover:scale-105 group-focus-within:opacity-90 group-focus-within:scale-105 group-focus:opacity-90 group-focus:scale-105'
                     )}
                     onLoad={() => setIsLoaded(true)}
                     onError={onError}
@@ -69,7 +69,7 @@ const EpisodeComponent = memo(
                   : 0;
 
         return (
-            <Link to={`/item/${episode.Id}`} key={episode.Id} className={'group ' + (className ?? '')}>
+            <Link to={`/item/${episode.Id}`} key={episode.Id} className={'group block outline-none focus:outline-none focus-visible:outline-none ' + (className ?? '')}>
                 <div className="relative w-full aspect-video rounded-md overflow-hidden">
                     {imageError ? (
                         <div className="w-full h-full bg-muted flex items-center justify-center rounded-md">
@@ -91,7 +91,7 @@ const EpisodeComponent = memo(
                     )}
 
                     {/* Hover play button */}
-                    <div className="absolute bottom-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-30">
+                    <div className="absolute bottom-2 left-2 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 group-focus:opacity-100 transition-opacity duration-150 z-30">
                         <div
                             className="flex items-center justify-center backdrop-blur-md bg-black/40 border border-white/15 rounded-full w-9 h-9 cursor-pointer hover:bg-black/60"
                             role="button"

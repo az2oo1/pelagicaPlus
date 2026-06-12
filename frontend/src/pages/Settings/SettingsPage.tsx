@@ -940,6 +940,7 @@ const SettingsPage = () => {
                 onValueChange={(val) => {
                     setSearchParams({ tab: val });
                 }}
+                activationMode="manual"
             >
                 <TabsList>
                     <TabsTrigger value="general">{t('category_general')}</TabsTrigger>

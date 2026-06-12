@@ -49,9 +49,9 @@ const PeopleRow = memo(
                         <Link
                             to={`/person/${person.Id}`}
                             key={`${person.Id}-${person.Role}`}
-                            className="group min-w-30 w-30"
+                            className="group min-w-30 w-30 block outline-none focus:outline-none focus-visible:outline-none"
                         >
-                            <div className="aspect-square w-full rounded-full overflow-hidden">
+                            <div className="relative aspect-square w-full rounded-full overflow-hidden">
                                 {profilePictureErrors[person.Id!] ? (
                                     <div className="bg-muted w-full h-full flex items-center justify-center rounded-full text-2xl">
                                         {person.Name ? (
@@ -73,10 +73,11 @@ const PeopleRow = memo(
                                             person.PrimaryImageTag || undefined
                                         )}
                                         alt={person.Name || 'No Name'}
-                                        className="h-full w-full object-cover group-hover:opacity-75 group-hover:scale-105 transition-opacity transition-transform duration-300 ease-out will-change-transform"
+                                        className="h-full w-full object-cover group-hover:opacity-75 group-hover:scale-105 group-focus-within:opacity-75 group-focus-within:scale-105 group-focus:opacity-75 group-focus:scale-105 transition-all duration-300 ease-out will-change-transform"
                                         onError={() => handleProfilePictureError(person.Id!)}
                                     />
                                 )}
+                                <div className="absolute inset-0 rounded-full pointer-events-none poster-card-outline z-20" />
                             </div>
                             <p className="mt-2 text-md line-clamp-1 text-ellipsis break-all text-center">
                                 {person.Name || 'No Name'}

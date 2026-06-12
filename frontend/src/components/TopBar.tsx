@@ -320,7 +320,15 @@ const UserMenu = () => {
     return (
         <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center gap-2 px-2 h-9">
+                <Button
+                    variant="ghost"
+                    className="flex items-center gap-2 px-2 h-9"
+                    onKeyDown={(e) => {
+                        if (['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                            e.preventDefault();
+                        }
+                    }}
+                >
                     <Avatar className="h-7 w-7 rounded-lg">
                         <AvatarImage src={profileImageUrl} alt={userName} />
                         <AvatarFallback className="rounded-lg text-xs">{initials}</AvatarFallback>
@@ -572,7 +580,7 @@ const TopBar = (_props: { overlay?: boolean }) => {
         <header className="fixed top-0 z-50 w-full">
             <div className="relative flex h-14 items-center gap-2 px-4 sm:px-12 transition-all duration-300 border-b border-border bg-background/60 backdrop-blur">
                 {/* Logo */}
-                <Link to="/" className="flex items-center gap-2 shrink-0 mr-2">
+                <Link to="/" className="flex items-center gap-2 shrink-0 mr-2" tabIndex={-1}>
                     <Avatar className="h-7 w-7 p-0.5 rounded-md">
                         <AvatarImage src={logoSrc} alt="logo" />
                         <AvatarFallback className="rounded-md text-xs">PE</AvatarFallback>
@@ -582,7 +590,7 @@ const TopBar = (_props: { overlay?: boolean }) => {
                 {/* Desktop nav */}
                 <nav className="hidden md:flex items-center gap-0.5">
                     <Button asChild variant="ghost" size="sm">
-                        <Link to="/">
+                        <Link to="/" id="home-nav-button">
                             <House className="h-4 w-4" />
                             {t('home')}
                         </Link>

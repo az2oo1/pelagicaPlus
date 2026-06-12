@@ -17,6 +17,7 @@ interface WatchlistButtonProps {
         | 'ghost'
         | null
         | undefined;
+    tabIndex?: number;
 }
 
 const WatchListButton = ({
@@ -24,6 +25,7 @@ const WatchListButton = ({
     showWatchlistButton,
     size = 'icon',
     variant = 'outline',
+    tabIndex,
 }: WatchlistButtonProps) => {
     const { isLiked, toggleLike, isLoading } = useLike(item.Id);
 
@@ -35,6 +37,7 @@ const WatchListButton = ({
             size={size}
             onClick={() => toggleLike(!isLiked)}
             disabled={isLoading}
+            tabIndex={tabIndex}
             className="hover:scale-105 active:scale-95 transition-transform duration-200 ease-out"
         >
             <Bookmark
