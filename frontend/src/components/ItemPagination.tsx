@@ -28,6 +28,7 @@ const ItemPagination = ({ totalPages, currentPage, onPageChange }: ItemPaginatio
                         <PaginationPrevious
                             text={t('previous')}
                             onClick={() => onPageChange(Math.max(0, currentPage - 1))}
+                            tabIndex={currentPage === 0 ? -1 : 0}
                             className={
                                 currentPage === 0
                                     ? 'pointer-events-none opacity-50'
@@ -46,6 +47,7 @@ const ItemPagination = ({ totalPages, currentPage, onPageChange }: ItemPaginatio
                                     <PaginationLink
                                         onClick={() => onPageChange(i)}
                                         isActive={i === currentPage}
+                                        tabIndex={0}
                                         className="cursor-pointer"
                                     >
                                         {i + 1}
@@ -68,6 +70,7 @@ const ItemPagination = ({ totalPages, currentPage, onPageChange }: ItemPaginatio
                         <PaginationNext
                             text={t('next')}
                             onClick={() => onPageChange(Math.min(totalPages - 1, currentPage + 1))}
+                            tabIndex={currentPage >= totalPages - 1 ? -1 : 0}
                             className={
                                 currentPage >= totalPages - 1
                                     ? 'pointer-events-none opacity-50'
