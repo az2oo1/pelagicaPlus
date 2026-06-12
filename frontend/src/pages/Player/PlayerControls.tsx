@@ -903,7 +903,7 @@ const PlayerControls = ({
                                             onClick={(e) => {
                                                 e.preventDefault();
                                                 e.stopPropagation();
-                                                setSubtitleSize((prev) => Math.max(250, prev - 10));
+                                                setSubtitleSize((prev) => Math.max(50, prev - 10));
                                             }}
                                         >
                                             -
@@ -916,7 +916,7 @@ const PlayerControls = ({
                                             onClick={(e) => {
                                                 e.preventDefault();
                                                 e.stopPropagation();
-                                                setSubtitleSize((prev) => Math.min(500, prev + 10));
+                                                setSubtitleSize((prev) => Math.min(150, prev + 10));
                                             }}
                                         >
                                             +

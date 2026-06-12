@@ -87,7 +87,7 @@ const PlayerPage = () => {
     );
     const [subtitleSize, setSubtitleSize] = useState<number>(() => {
         const saved = localStorage.getItem('playerSubtitleSize');
-        return saved ? Math.max(250, parseInt(saved, 10)) : 250;
+        return saved ? Math.max(50, Math.min(150, parseInt(saved, 10))) : 100;
     });
     const [subtitleDelay, setSubtitleDelay] = useState<number>(() => {
         const saved = localStorage.getItem('playerSubtitleDelay');
@@ -329,7 +329,7 @@ const PlayerPage = () => {
             ref={containerRef}
             className="relative w-full h-screen bg-black flex overflow-hidden"
             style={{
-                '--subtitle-size': `${subtitleSize}%`,
+                '--subtitle-size': `${subtitleSize * 5}%`,
             } as React.CSSProperties}
         >
             {config.showContentAdvisory !== false && (
