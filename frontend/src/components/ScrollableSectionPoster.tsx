@@ -111,7 +111,7 @@ const ScrollableSectionPoster = ({
                             ? posterUrl
                             : getPrimaryImageUrl(
                                   targetImageId,
-                                  undefined,
+                                  { width: 400 },
                                   targetImageTag
                               )
                     }
